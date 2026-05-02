@@ -1,0 +1,44 @@
+# Güncelleme Motoru
+# Telif Hakkı (C) 2026 Mehmet Aykurt
+
+import urllib.request
+import json
+import threading
+import wx
+import webbrowser
+import gui
+
+MEVCUT_SURUM = "1.0"
+GUNCELLEME_LINKI = "https://raw.githubusercontent.com/MehmetAykurt/kurum-rehberi/main/update.json"
+
+def surumleri_karsilastir(sunucu_surum, mevcut_surum):
+    try:
+        return float(sunucu_surum) > float(mevcut_surum)
+    except:
+        return sunucu_surum != mevcut_surum
+
+def gizlice_kontrol_et():
+    try:
+        req = urllib.request.Request(GUNCELLEME_LINKI, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            veri = json.loads(response.read().decode('utf-8'))
+            
+            sunucu_surum = veri.get("surum")
+            indirme_linki = veri.get("link")
+            aciklama = veri.get("aciklama", "Yeni bir sürüm mevcut ve sizi bekliyor!")
+
+            if sunucu_surum and surumleri_karsilastir(sunucu_surum, MEVCUT_SURUM):
+                wx.CallAfter(guncelleme_penceresi_goster, sunucu_surum, indirme_linki, aciklama)
+    except Exception:
+        pass
+
+def guncelleme_penceresi_goster(yeni_surum, link, aciklama):
+    cevap = gui.messageBox(
+        f"Engelsiz Mail eklentisi için harika bir haber!\n\nYeni bir sürüm ({yeni_surum}) bulundu.\n\nYenilikler:\n{aciklama}\n\nŞimdi indirmek için varsayılan tarayıcınız açılsın mı?",
+        "Yeni Güncelleme Bulundu!",
+        wx.YES_NO | wx.ICON_INFORMATION
+    )
+    if cevap == wx.YES:
+        webbrowser.open(link)
+
+threading.Thread(target=gizlice_kontrol_et).start()
