@@ -7,8 +7,9 @@ import threading
 import wx
 import webbrowser
 import gui
+import globalPluginHandler
 
-MEVCUT_SURUM = "1.0"
+MEVCUT_SURUM = "1.0.0"
 GUNCELLEME_LINKI = "https://raw.githubusercontent.com/MehmetAykurt/kurum-rehberi/main/update.json"
 
 def surumleri_karsilastir(sunucu_surum, mevcut_surum):
@@ -34,11 +35,14 @@ def gizlice_kontrol_et():
 
 def guncelleme_penceresi_goster(yeni_surum, link, aciklama):
     cevap = gui.messageBox(
-        f"Engelsiz Mail eklentisi için harika bir haber!\n\nYeni bir sürüm ({yeni_surum}) bulundu.\n\nYenilikler:\n{aciklama}\n\nŞimdi indirmek için varsayılan tarayıcınız açılsın mı?",
-        "Yeni Güncelleme Bulundu!",
+        f"Kurum Rehberi adlı eklentinin yeni sürümü yayınlandı.\n\n({yeni_surum})\n\nYenilikler:\n{aciklama}\n\nŞimdi güncellemek ister misiniz?",
+        "Yeni Güncelleme Uyarısı!",
         wx.YES_NO | wx.ICON_INFORMATION
     )
     if cevap == wx.YES:
         webbrowser.open(link)
 
-threading.Thread(target=gizlice_kontrol_et).start()
+class GlobalPlugin(globalPluginHandler.GlobalPlugin):
+    def __init__(self):
+        super(GlobalPlugin, self).__init__()
+        threading.Thread(target=gizlice_kontrol_et).start()
