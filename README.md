@@ -1,0 +1,2 @@
+# kurum-rehberi
+Kurum Rehberi, NVDA kullanıcıları için geliştirilmiş erişilebilir ve özelleştirilebilir bir kurum/personel rehberi eklentisidir. Ad, soyad, görev veya unvan, birim, telefon numarası, dahili numara, e-posta ve not bilgilerini kaydetme, arama, düzenleme, silme, içe aktarma ve dışa aktarma özellikleri sunar. Ayarlar bölümünden alan görünürlüğünü değiştirerek eklenti sade bir telefon rehberi, e-posta rehberi veya kişisel iletişim rehberi olarak da kullanılabilir.
