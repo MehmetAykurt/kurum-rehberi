@@ -15,6 +15,7 @@ import gui
 import globalPluginHandler
 import globalVars
 import ui
+from logHandler import log
 
 from scriptHandler import script
 
@@ -22,12 +23,13 @@ from scriptHandler import script
 DATA_FOLDER_NAME = "kurum_rehberi"
 DATA_FILE_NAME = "rehber.json"
 SETTINGS_FILE_NAME = "ayarlar.json"
+HELP_FILE_NAME = "readme.html"
 
 
 FIELD_DEFINITIONS = [
     {"key": "firstName", "label": "Ad", "detailName": "Seçili kaydın adı", "column": "Ad", "width": 120, "multiline": False},
     {"key": "lastName", "label": "Soyad", "detailName": "Seçili kaydın soyadı", "column": "Soyad", "width": 120, "multiline": False},
-    {"key": "title", "label": "Görev / Unvan", "detailName": "Seçili kaydın görev veya unvan bilgisi", "column": "Görev / Unvan", "width": 150, "multiline": False},
+    {"key": "title", "label": "Görev/Unvan", "detailName": "Seçili kaydın görev veya unvan bilgisi", "column": "Görev/Unvan", "width": 150, "multiline": False},
     {"key": "unit", "label": "Birim", "detailName": "Seçili kaydın birim bilgisi", "column": "Birim", "width": 130, "multiline": False},
     {"key": "phone", "label": "Telefon Numarası", "detailName": "Seçili kaydın telefon numarası", "column": "Telefon Numarası", "width": 140, "multiline": False},
     {"key": "extension", "label": "Dahili Numara", "detailName": "Seçili kaydın dahili numarası", "column": "Dahili Numara", "width": 110, "multiline": False},
@@ -50,6 +52,71 @@ def getDataFilePath():
 
 def getSettingsFilePath():
     return os.path.join(getDataFolderPath(), SETTINGS_FILE_NAME)
+
+
+def logWarning(message, exc_info=False):
+    try:
+        log.debugWarning("Kurum Rehberi: {0}".format(message), exc_info=exc_info)
+    except Exception:
+        pass
+
+
+def getAddonRootPath():
+    return os.path.dirname(os.path.dirname(__file__))
+
+
+def getUniqueLanguageCodes():
+    languageCodes = []
+
+    try:
+        import languageHandler
+        currentLanguage = languageHandler.getLanguage()
+    except Exception:
+        currentLanguage = ""
+        logWarning("NVDA dili alınamadı.", exc_info=True)
+
+    if currentLanguage:
+        normalizedLanguage = currentLanguage.replace("-", "_")
+        languageCodes.append(normalizedLanguage)
+
+        if "_" in normalizedLanguage:
+            languageCodes.append(normalizedLanguage.split("_", 1)[0])
+
+    languageCodes.extend(["tr", "en"])
+
+    uniqueLanguageCodes = []
+    for languageCode in languageCodes:
+        if languageCode and languageCode not in uniqueLanguageCodes:
+            uniqueLanguageCodes.append(languageCode)
+
+    return uniqueLanguageCodes
+
+
+def getHelpFileCandidates():
+    addonRootPath = getAddonRootPath()
+    candidates = []
+
+    for languageCode in getUniqueLanguageCodes():
+        candidates.append(os.path.join(addonRootPath, "doc", languageCode, HELP_FILE_NAME))
+
+    candidates.append(os.path.join(addonRootPath, "doc", HELP_FILE_NAME))
+
+    return candidates
+
+
+def getExistingHelpFilePath():
+    for candidatePath in getHelpFileCandidates():
+        if os.path.exists(candidatePath):
+            return candidatePath
+
+    return None
+
+
+def getExpectedHelpFilePath():
+    candidates = getHelpFileCandidates()
+    if candidates:
+        return candidates[0]
+    return os.path.join(getAddonRootPath(), "doc", "tr", HELP_FILE_NAME)
 
 
 def getDocumentsFolderPath():
@@ -86,9 +153,16 @@ def getDocumentsFolderPath():
             return path
 
     except Exception:
-        pass
+        logWarning("Belgeler klasörü Windows bilinen klasör API'siyle alınamadı.", exc_info=True)
 
     return os.path.join(os.path.expanduser("~"), "Documents")
+
+
+def normalizeTextValue(value):
+    if value is None:
+        return ""
+
+    return str(value)
 
 
 def normalizeRecord(record):
@@ -96,14 +170,14 @@ def normalizeRecord(record):
         record = {}
 
     return {
-        "firstName": str(record.get("firstName", "")),
-        "lastName": str(record.get("lastName", "")),
-        "title": str(record.get("title", "")),
-        "unit": str(record.get("unit", "")),
-        "phone": str(record.get("phone", "")),
-        "extension": str(record.get("extension", "")),
-        "email": str(record.get("email", "")),
-        "note": str(record.get("note", ""))
+        "firstName": normalizeTextValue(record.get("firstName", "")),
+        "lastName": normalizeTextValue(record.get("lastName", "")),
+        "title": normalizeTextValue(record.get("title", "")),
+        "unit": normalizeTextValue(record.get("unit", "")),
+        "phone": normalizeTextValue(record.get("phone", "")),
+        "extension": normalizeTextValue(record.get("extension", "")),
+        "email": normalizeTextValue(record.get("email", "")),
+        "note": normalizeTextValue(record.get("note", ""))
     }
 
 
@@ -149,6 +223,7 @@ def loadFieldVisibilitySettings():
         return normalizeFieldVisibility(loadedData)
 
     except Exception:
+        logWarning("Alan görünürlüğü ayarları okunamadı. Varsayılan ayarlar kullanılacak.", exc_info=True)
         return dict(DEFAULT_FIELD_VISIBILITY)
 
 
@@ -175,11 +250,12 @@ def saveFieldVisibilitySettings(fieldVisibility):
         return True
 
     except Exception:
+        logWarning("Alan görünürlüğü ayarları kaydedilemedi.", exc_info=True)
         try:
             if os.path.exists(tempSettingsPath):
                 os.remove(tempSettingsPath)
         except Exception:
-            pass
+            logWarning("Geçici ayar dosyası temizlenemedi.", exc_info=True)
 
         return False
 
@@ -273,54 +349,19 @@ def recordMatchesSearch(recordData, searchText, visibleFieldKeys=None):
 
 
 def makeDisplayTextCtrl(parent, name, multiline=False):
-    if multiline:
-        control = wx.TextCtrl(parent, style=wx.TE_MULTILINE)
-    else:
-        control = wx.TextCtrl(parent)
+    style = wx.TE_READONLY
 
+    if multiline:
+        style |= wx.TE_MULTILINE
+
+    control = wx.TextCtrl(parent, style=style)
     control.SetName(name)
 
     control.SetBackgroundColour(
         wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW)
     )
 
-    control.Bind(wx.EVT_CHAR, blockDisplayTextEditing)
-
     return control
-
-
-def blockDisplayTextEditing(event):
-    keyCode = event.GetKeyCode()
-
-    allowedKeys = (
-        wx.WXK_LEFT,
-        wx.WXK_RIGHT,
-        wx.WXK_UP,
-        wx.WXK_DOWN,
-        wx.WXK_HOME,
-        wx.WXK_END,
-        wx.WXK_PAGEUP,
-        wx.WXK_PAGEDOWN,
-        wx.WXK_TAB,
-        wx.WXK_SHIFT,
-        wx.WXK_CONTROL,
-        wx.WXK_ALT,
-    )
-
-    if keyCode in allowedKeys:
-        event.Skip()
-        return
-
-    if event.ControlDown() and keyCode in (
-        ord("A"),
-        ord("a"),
-        ord("C"),
-        ord("c"),
-    ):
-        event.Skip()
-        return
-
-    return
 
 
 def bindDigitsOnlyTextCtrl(control, fieldName):
@@ -479,7 +520,7 @@ class RecordDialog(wx.Dialog):
 
         if not any(value for value in visibleValues.values()):
             wx.MessageBox(
-                "En az bir görünür alan doldurulmalıdır.",
+                "Görünür alanlardan en az biri doldurulmalıdır.",
                 "Eksik Bilgi",
                 wx.OK | wx.ICON_WARNING,
                 self
@@ -541,7 +582,7 @@ class RecordDialog(wx.Dialog):
 class ImportExportDialog(wx.Dialog):
 
     def __init__(self, parent):
-        super(ImportExportDialog, self).__init__(parent, title="İçe / Dışa Aktar", size=(430, 180))
+        super(ImportExportDialog, self).__init__(parent, title="İçe/Dışa Aktar", size=(430, 180))
         self._buildInterface()
         self.CentreOnScreen()
         self.exportButton.SetFocus()
@@ -764,7 +805,7 @@ class KurumRehberiDialog(wx.Dialog):
         self.newButton = wx.Button(panel, label="&Yeni Kayıt")
         self.editButton = wx.Button(panel, label="Dü&zenle")
         self.deleteButton = wx.Button(panel, label="&Sil")
-        self.importExportButton = wx.Button(panel, label="İçe / Dışa &Aktar")
+        self.importExportButton = wx.Button(panel, label="İçe/Dışa &Aktar")
         self.closeButton = wx.Button(panel, label="&Kapat")
 
         buttonSizer.Add(self.newButton, 0, wx.RIGHT, 8)
@@ -875,8 +916,13 @@ class KurumRehberiDialog(wx.Dialog):
 
     def findRecordIndex(self, recordData):
         for index, currentRecord in enumerate(self.records):
+            if currentRecord is recordData:
+                return index
+
+        for index, currentRecord in enumerate(self.records):
             if currentRecord == recordData:
                 return index
+
         return -1
 
     def onSearchTextChanged(self, event):
@@ -886,7 +932,9 @@ class KurumRehberiDialog(wx.Dialog):
 
     def onSearchAnnouncementTimer(self, event):
         if self.pendingSearchMessage:
-            ui.message(self.pendingSearchMessage)
+            message = self.pendingSearchMessage
+            self.pendingSearchMessage = ""
+            ui.message(message)
 
     def queueSearchAnnouncement(self, count):
         searchText = self.searchText.GetValue().strip()
@@ -962,7 +1010,9 @@ class KurumRehberiDialog(wx.Dialog):
 
     def copyTextToClipboard(self, text):
         if not wx.TheClipboard.Open():
+            logWarning("Pano açılamadı.")
             return False
+
         try:
             data = wx.TextDataObject()
             data.SetText(text)
@@ -970,6 +1020,7 @@ class KurumRehberiDialog(wx.Dialog):
             wx.TheClipboard.Flush()
             return True
         except Exception:
+            logWarning("Metin panoya kopyalanamadı.", exc_info=True)
             return False
         finally:
             wx.TheClipboard.Close()
@@ -1039,7 +1090,7 @@ class KurumRehberiDialog(wx.Dialog):
                 if os.path.exists(tempFilePath):
                     os.remove(tempFilePath)
             except Exception:
-                pass
+                logWarning("Geçici rehber dosyası temizlenemedi.", exc_info=True)
 
             wx.MessageBox(
                 "Kayıtlar rehber dosyasına yazılamadı.\n\nDosya yolu:\n{0}\n\nHata:\n{1}".format(dataFilePath, error),
@@ -1172,34 +1223,93 @@ class KurumRehberiDialog(wx.Dialog):
         for control in self.detailTextControls:
             control.SetValue("")
 
-    def exportRecordsToDocuments(self):
+    def ensureDocumentsFolderExists(self, operationTitle):
         documentsPath = getDocumentsFolderPath()
-        if not os.path.isdir(documentsPath):
+        if os.path.isdir(documentsPath):
+            return documentsPath
+
+        try:
+            os.makedirs(documentsPath)
+            return documentsPath
+        except Exception as error:
+            wx.MessageBox(
+                "Belgeler klasörüne erişilemedi.\n\nYol:\n{0}\n\nHata:\n{1}".format(documentsPath, error),
+                operationTitle,
+                wx.OK | wx.ICON_ERROR,
+                self
+            )
+            logWarning("Belgeler klasörüne erişilemedi.", exc_info=True)
+            return None
+
+    def writeRecordsToJsonFile(self, records, filePath):
+        tempFilePath = filePath + ".tmp"
+
+        try:
+            with open(tempFilePath, "w", encoding="utf-8") as file:
+                json.dump(records, file, ensure_ascii=False, indent=2)
+
+            os.replace(tempFilePath, filePath)
+            return True
+        except Exception:
+            logWarning("JSON dosyası yazılamadı: {0}".format(filePath), exc_info=True)
             try:
-                os.makedirs(documentsPath)
-            except Exception as error:
-                wx.MessageBox("Belgeler klasörüne erişilemedi.\n\nYol:\n{0}\n\nHata:\n{1}".format(documentsPath, error), "Dışa Aktar", wx.OK | wx.ICON_ERROR, self)
-                return False
+                if os.path.exists(tempFilePath):
+                    os.remove(tempFilePath)
+            except Exception:
+                logWarning("Geçici JSON dosyası temizlenemedi: {0}".format(tempFilePath), exc_info=True)
+
+            return False
+
+    def createAutomaticBackupBeforeImport(self):
+        if not self.records:
+            return None
+
+        documentsPath = self.ensureDocumentsFolderExists("İçe Aktar")
+        if documentsPath is None:
+            return False
+
+        fileName = "kurum_rehberi_ice_aktarma_oncesi_yedek_{0}.json".format(
+            datetime.now().strftime("%Y%m%d_%H%M%S")
+        )
+        backupPath = os.path.join(documentsPath, fileName)
+
+        if not self.writeRecordsToJsonFile(self.records, backupPath):
+            wx.MessageBox(
+                "İçe aktarma başlamadan önce mevcut kayıtların otomatik yedeği alınamadı.\n\n"
+                "Veri güvenliği için içe aktarma işlemi iptal edildi.",
+                "İçe Aktar",
+                wx.OK | wx.ICON_ERROR,
+                self
+            )
+            return False
+
+        return backupPath
+
+    def exportRecordsToDocuments(self):
+        documentsPath = self.ensureDocumentsFolderExists("Dışa Aktar")
+        if documentsPath is None:
+            return False
 
         fileName = "kurum_rehberi_yedek_{0}.json".format(datetime.now().strftime("%Y%m%d_%H%M%S"))
         exportPath = os.path.join(documentsPath, fileName)
-        tempExportPath = exportPath + ".tmp"
 
-        try:
-            with open(tempExportPath, "w", encoding="utf-8") as file:
-                json.dump(self.records, file, ensure_ascii=False, indent=2)
-            os.replace(tempExportPath, exportPath)
-            wx.MessageBox("Yedek dosyanız Belgeler klasörüne kaydedilmiştir.\n\nDosya adı:\n{0}".format(fileName), "Dışa Aktar", wx.OK | wx.ICON_INFORMATION, self)
-            ui.message("Yedek dosyanız Belgeler klasörüne kaydedilmiştir.")
-            return True
-        except Exception as error:
-            try:
-                if os.path.exists(tempExportPath):
-                    os.remove(tempExportPath)
-            except Exception:
-                pass
-            wx.MessageBox("Yedek dosyası oluşturulamadı.\n\nYol:\n{0}\n\nHata:\n{1}".format(exportPath, error), "Dışa Aktar", wx.OK | wx.ICON_ERROR, self)
+        if not self.writeRecordsToJsonFile(self.records, exportPath):
+            wx.MessageBox(
+                "Yedek dosyası oluşturulamadı.\n\nYol:\n{0}".format(exportPath),
+                "Dışa Aktar",
+                wx.OK | wx.ICON_ERROR,
+                self
+            )
             return False
+
+        wx.MessageBox(
+            "Yedek dosya Belgeler klasörüne kaydedilmiştir.\n\nDosya adı:\n{0}".format(fileName),
+            "Dışa Aktar",
+            wx.OK | wx.ICON_INFORMATION,
+            self
+        )
+        ui.message("Yedek dosya Belgeler klasörüne kaydedilmiştir.")
+        return True
 
     def importRecordsFromFile(self):
         documentsPath = getDocumentsFolderPath()
@@ -1213,7 +1323,7 @@ class KurumRehberiDialog(wx.Dialog):
                 return False
             importPath = dialog.GetPath()
 
-        answer = wx.MessageBox("Seçilen yedek dosyası içe aktarılacak.\n\nBu işlem mevcut rehber kayıtlarının yerine geçer.\n\nDevam etmek istiyor musunuz?", "İçe Aktarma Onayı", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_WARNING, self)
+        answer = wx.MessageBox("Seçilen yedek dosyası içe aktarılacaktır.\n\nBu işlem mevcut rehber kayıtlarının yerine geçecektir.\n\nDevam etmek istiyor musunuz?", "İçe Aktarma Onayı", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_WARNING, self)
         if answer != wx.YES:
             self.recordList.SetFocus()
             return False
@@ -1228,6 +1338,11 @@ class KurumRehberiDialog(wx.Dialog):
             self.recordList.SetFocus()
             return False
 
+        backupPath = self.createAutomaticBackupBeforeImport()
+        if backupPath is False:
+            self.recordList.SetFocus()
+            return False
+
         oldRecords = self.records
         self.records = importedRecords
         if not self.saveRecords():
@@ -1239,8 +1354,17 @@ class KurumRehberiDialog(wx.Dialog):
         self.clearSearchWithoutEvent()
         self.refreshRecordList()
         self.recordList.SetFocus()
-        wx.MessageBox("Yedek dosyanız içe aktarılmıştır.", "İçe Aktar", wx.OK | wx.ICON_INFORMATION, self)
-        ui.message("Yedek dosyanız içe aktarılmıştır.")
+
+        message = "Yedek dosya içe aktarılmıştır."
+        if backupPath:
+            message = (
+                "{0}\n\n"
+                "Mevcut kayıtların içe aktarma öncesi yedeği Belgeler klasörüne kaydedilmiştir.\n\n"
+                "Yedek dosya adı:\n{1}"
+            ).format(message, os.path.basename(backupPath))
+
+        wx.MessageBox(message, "İçe Aktar", wx.OK | wx.ICON_INFORMATION, self)
+        ui.message("Yedek dosya içe aktarılmıştır.")
         return True
 
     def onImportExport(self, event):
@@ -1274,7 +1398,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
         self.openMenuItem = self.subMenu.Append(
             wx.ID_ANY,
-            "Kurum Rehberini &Aç",
+            "Kurum Rehberi'ni &Aç",
             "Kurum Rehberi penceresini açar"
         )
 
@@ -1287,7 +1411,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.helpMenuItem = self.subMenu.Append(
             wx.ID_ANY,
             "&Yardım",
-            "Kurum Rehberi yardımını açar"
+            "Kurum Rehberi yardım dosyasını açar"
         )
 
         try:
@@ -1315,7 +1439,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 if menuItem is not None:
                     gui.mainFrame.sysTrayIcon.Unbind(wx.EVT_MENU, source=menuItem)
             except Exception:
-                pass
+                logWarning("Menü bağlantısı kaldırılamadı.", exc_info=True)
 
         try:
             if self.subMenuItem is not None:
@@ -1331,9 +1455,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                         try:
                             toolsMenu.Remove(self.subMenuItem)
                         except Exception:
-                            pass
+                            logWarning("Kurum Rehberi menüsü kaldırılamadı.", exc_info=True)
         except Exception:
-            pass
+            logWarning("Kurum Rehberi menüsü temizlenemedi.", exc_info=True)
 
         self.openMenuItem = None
         self.settingsMenuItem = None
@@ -1350,10 +1474,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             if self.dialog.IsShown():
                 self.dialog.EndModal(wx.ID_CANCEL)
         except Exception:
+            logWarning("Açık Kurum Rehberi penceresi kapatılamadı.", exc_info=True)
             try:
                 self.dialog.Destroy()
             except Exception:
-                pass
+                logWarning("Açık Kurum Rehberi penceresi yok edilemedi.", exc_info=True)
 
     def onOpenFromMenu(self, event):
         wx.CallAfter(self.openKurumRehberi)
@@ -1380,20 +1505,35 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             return
 
         gui.mainFrame.prePopup()
+        dialog = None
 
         try:
-            self.dialog = KurumRehberiDialog(gui.mainFrame)
-            self.dialog.ShowModal()
-            self.dialog.Destroy()
-            self.dialog = None
+            dialog = KurumRehberiDialog(gui.mainFrame)
+            self.dialog = dialog
+            dialog.ShowModal()
+        except Exception:
+            logWarning("Kurum Rehberi penceresi açılamadı veya beklenmeyen biçimde kapandı.", exc_info=True)
+            wx.MessageBox(
+                "Kurum Rehberi penceresi açılamadı. Ayrıntılar NVDA günlüğüne yazılmıştır.",
+                "Kurum Rehberi",
+                wx.OK | wx.ICON_ERROR,
+                gui.mainFrame
+            )
         finally:
+            if dialog is not None:
+                try:
+                    dialog.Destroy()
+                except Exception:
+                    logWarning("Kurum Rehberi penceresi yok edilemedi.", exc_info=True)
+            self.dialog = None
             gui.mainFrame.postPopup()
 
     def openSettingsDialog(self):
         gui.mainFrame.prePopup()
-        dialog = SettingsDialog(gui.mainFrame)
+        dialog = None
 
         try:
+            dialog = SettingsDialog(gui.mainFrame)
             result = dialog.ShowModal()
 
             if result == wx.ID_OK:
@@ -1407,21 +1547,36 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                     )
                 else:
                     ui.message("Ayarlar kaydedildi.")
+        except Exception:
+            logWarning("Kurum Rehberi ayar penceresi açılamadı.", exc_info=True)
+            wx.MessageBox(
+                "Kurum Rehberi ayarları açılamadı. Ayrıntılar NVDA günlüğüne yazılmıştır.",
+                "Kurum Rehberi Ayarları",
+                wx.OK | wx.ICON_ERROR,
+                gui.mainFrame
+            )
         finally:
-            dialog.Destroy()
+            if dialog is not None:
+                try:
+                    dialog.Destroy()
+                except Exception:
+                    logWarning("Kurum Rehberi ayar penceresi yok edilemedi.", exc_info=True)
             gui.mainFrame.postPopup()
 
     def showHelpMessage(self):
-        addonRootPath = os.path.dirname(os.path.dirname(__file__))
-        helpFilePath = os.path.join(addonRootPath, "doc", "readme.html")
+        helpFilePath = getExistingHelpFilePath()
 
-        if not os.path.exists(helpFilePath):
+        if helpFilePath is None:
             gui.mainFrame.prePopup()
 
             try:
                 wx.MessageBox(
                     "Yardım dosyası bulunamadı.\n\n"
-                    "Beklenen dosya yolu:\n{0}".format(helpFilePath),
+                    "Beklenen dosya yolu:\n{0}\n\n"
+                    "Not: manifest.ini içinde docFileName değeri yalnızca readme.html olmalı; "
+                    "Türkçe yardım dosyası doc/tr/readme.html konumunda bulunmalıdır.".format(
+                        getExpectedHelpFilePath()
+                    ),
                     "Kurum Rehberi Yardım",
                     wx.OK | wx.ICON_ERROR,
                     gui.mainFrame
@@ -1448,3 +1603,5 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 )
             finally:
                 gui.mainFrame.postPopup()
+
+            logWarning("Yardım dosyası açılamadı.", exc_info=True)
