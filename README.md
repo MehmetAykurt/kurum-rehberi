@@ -1,102 +1,245 @@
-Kurum Rehberi Kullanım ve Bilgilendirme Kılavuzu
+# Kurum Rehberi
 
-Eklentinin Adı: Kurum Rehberi
+**Kurum Rehberi**, NVDA ekran okuyucusu kullanıcıları için geliştirilmiş erişilebilir, sade, düzenli ve özelleştirilebilir bir kurum/personel rehberi eklentisidir.
 
-Güncelleme Tarihi: 7 Mayıs 2026
+Bu eklenti; kurumlarda görev yapan personelin ad, soyad, görev veya unvan, birim, telefon numarası, dahili numara, e-posta ve not bilgilerini düzenli biçimde kaydetmek, aramak, düzenlemek, yedeklemek ve gerektiğinde bu bilgilere hızlıca ulaşmak amacıyla hazırlanmıştır.
 
-Hazırlayan: Mehmet Aykurt
+## Sürüm
 
-İletişim E-postası: m.aykurt38@gmail.com
+```text
+1.1.0
+```
 
-Genel Tanıtım
+## Geliştirici
 
-Kurum Rehberi, NVDA ekran okuyucusu kullanıcıları için hazırlanmış erişilebilir, sade, kullanışlı ve özelleştirilebilir bir rehber eklentisidir. 
+```text
+Mehmet Aykurt
+```
 
-Bu eklenti; kurumlarda görev yapan personelin ad, soyad, görev veya unvan, birim, telefon numarası, dahili numara, e-posta ve not bilgilerini düzenli biçimde kaydetmek ve bu bilgilere hızlıca ulaşmak amacıyla geliştirilmiştir. 
+İletişim:
 
-Eklenti varsayılan olarak kurum personeli ve kurum içi iletişim bilgileri için tasarlanmıştır. Bununla birlikte, ayarlar bölümünde yer alan alan görünürlüğü seçenekleri sayesinde farklı kullanım ihtiyaçlarına göre sadeleştirilebilir. Kullanıcı, ihtiyaç duymadığı alanları kapatarak eklentiyi yalnızca telefon rehberi, e-posta rehberi veya kişisel iletişim rehberi olarak da kullanabilir. 
+```text
+m.aykurt38@gmail.com
+```
 
-Temel Amaç
+## Genel Amaç
 
-Kurum Rehberi’nin temel amacı, görme engelli kullanıcıların kurum içi rehber bilgilerine bağımsız, hızlı ve güvenilir biçimde erişmesini sağlamaktır. Eklenti, ekran okuyucu kullanımına uygun biçimde tasarlanmış olup klavye ile rahatça kullanılabilir. 
+Kurum Rehberi’nin temel amacı, görme engelli NVDA kullanıcılarının kurum içi rehber bilgilerine bağımsız, hızlı, güvenilir ve düzenli biçimde erişebilmesini sağlamaktır.
 
-Santral görevlileri, memurlar, okul personeli, kurum çalışanları ve düzenli iletişim bilgisi tutmak isteyen NVDA kullanıcıları için pratik bir kayıt ve erişim ortamı sunar. 
+Eklenti; santral görevlileri, memurlar, okul personeli, kurum çalışanları ve düzenli iletişim bilgisi tutmak isteyen NVDA kullanıcıları için pratik bir kayıt, arama, düzenleme ve yedekleme ortamı sunar.
 
-Başlıca Özellikler
+## Başlıca Özellikler
 
-Eklenti ile yeni kayıt oluşturulabilir, mevcut kayıtlar düzenlenebilir, kayıtlar silinebilir, rehber içinde arama yapılabilir, kayıt bilgileri hızlıca kopyalanabilir, veriler dışa aktarılabilir ve daha önce alınmış yedekler içe aktarılabilir. 
+- Yeni rehber kaydı oluşturma.
+- Mevcut kayıtları düzenleme.
+- Seçili kaydı silme.
+- Rehber içinde hızlı arama yapma.
+- Seçili kayıt bilgilerini ayrıntılı biçimde görüntüleme.
+- Telefon numarası, dahili numara ve e-posta adresini hızlıca kopyalama.
+- Kayıtları JSON biçiminde dışa aktarma.
+- Daha önce alınmış JSON yedeklerini içe aktarma.
+- İçe aktarma öncesinde mevcut kayıtların otomatik yedeğini alma.
+- Görünecek alanları ayarlardan belirleme.
+- Yardım dosyasına doğrudan eklenti penceresinden erişme.
+- Kurum Rehberi web sayfası üzerinden yorum ve geri bildirim bırakma.
+- İleride farklı dillere çevrilebilmesi için hazırlanmış çeviri altyapısı.
 
-Kayıtlar ad ve soyad bilgisine göre otomatik olarak sıralanır. Arama alanına yazılan metin, ayarlarda görünür durumda olan alanlar içinde aranır. Arama alanı temizlendiğinde tüm kayıtlar yeniden listelenir. 
+## Sürüm 1.1.0 ile Gelen Düzenlemeler
 
-Kullanım
+Bu sürümde eklentinin kullanım yapısı sadeleştirilmiş ve ana pencere daha merkezî bir kullanım alanı hâline getirilmiştir.
 
-Eklenti varsayılan olarak NVDA+Shift+R kısayolu ile açılır. Kullanıcı isterse bu kısayolu NVDA menüsünde yer alan Tercihler, Girdi Hareketleri bölümünden değiştirebilir. 
+- NVDA Araçlar menüsündeki Kurum Rehberi alt menüsü kaldırılmıştır.
+- Ayarlar, Yardım ve Yorum Bırak seçenekleri doğrudan ana pencereye taşınmıştır.
+- Yorum Bırak düğmesi, Kurum Rehberi eklentisine ait web sayfasını tarayıcıda açacak biçimde düzenlenmiştir.
+- Girdi Hareketleri bölümünde yalnızca Kurum Rehberi penceresini açan komut bırakılmıştır.
+- Pencere içi kısayollar yalnızca Kurum Rehberi penceresi açıkken çalışacak biçimde korunmuştur.
+- Kullanıcıya görünen metinler gözden geçirilmiş ve ileride yapılabilecek çeviriler için çeviri altyapısı hazırlanmıştır.
 
-Eklenti ayrıca NVDA Araçlar menüsündeki Kurum Rehberi alt menüsünde yer alır. Bu menüden Kurum Rehberi’ni Aç, Ayarlar ve Yardım seçeneklerine ulaşılabilir. 
+## Kullanım
 
-Eklenti açıldığında ilk odak arama alanına gelir. Kullanıcı doğrudan aramak istediği adı, soyadı, birimi, görevi, telefon numarasını, dahili numarayı, e-posta adresini veya not bilgisini yazabilir. 
+Eklenti varsayılan olarak aşağıdaki kısayol ile açılır:
 
-Klavye Kullanımı
+```text
+NVDA+Shift+R
+```
 
-Liste üzerindeyken Enter tuşu seçili kaydı düzenler. Delete tuşu, seçili kaydı silmek üzere onay penceresi açar. Alt+S seçili kaydı silme işlemini başlatır. 
+Kullanıcı isterse bu kısayolu NVDA menüsünde yer alan **Tercihler > Girdi Hareketleri** bölümünden değiştirebilir.
 
-Seçili kayıt bilgi alanlarından birindeyken Alt+C, o alanın içeriğini panoya kopyalar. Alt+T seçili kaydın telefon numarasını, Alt+D dahili numarasını, Alt+E ise e-posta adresini doğrudan kopyalar. 
+Girdi Hareketleri bölümünde yalnızca Kurum Rehberi penceresini açan komut bulunur. Yeni kayıt, düzenleme, silme, ayarlar, yardım ve yorum bırakma gibi işlemlere ait kısayollar yalnızca Kurum Rehberi penceresi açıkken geçerlidir.
 
-Ayarlar
+## Ana Pencere
 
-Ayarlar bölümünde kayıt alanlarının görünürlüğü değiştirilebilir. Ad, soyad, görev veya unvan, birim, telefon numarası, dahili numara, e-posta ve not alanları onay kutuları aracılığıyla açılıp kapatılabilir. 
+Eklenti açıldığında ilk odak arama alanına gelir.
 
-Varsayılan olarak tüm alanlar görünür durumdadır. Kullanıcı, ihtiyaç duymadığı alanların işaretini kaldırarak arayüzü sadeleştirebilir. 
+Ana pencerede sırasıyla şu bölümler yer alır:
 
-Bir alanın kapatılması mevcut kayıt verilerini silmez. Kapatılan alan yalnızca ana listede, yeni kayıt penceresinde, düzenleme penceresinde, seçili kayıt bilgilerinde ve arama kapsamında gizlenir. Alan yeniden açıldığında daha önce kaydedilmiş bilgiler tekrar görünür. 
+- Arama alanı.
+- Aramayı Temizle düğmesi.
+- Kayıt listesi.
+- Seçili kayıt bilgilerini gösteren salt okunur alanlar.
+- İşlem düğmeleri.
 
-Kurum Rehberi penceresi açıkken ayarlar değiştirilirse, değişikliklerin uygulanması için Kurum Rehberi penceresinin kapatılıp yeniden açılması gerekir. 
+Ana penceredeki işlem düğmeleri şunlardır:
 
-Verilerin Saklanması
+- Yeni Kayıt.
+- Düzenle.
+- Sil.
+- İçe/Dışa Aktar.
+- Ayarlar.
+- Yardım.
+- Yorum Bırak.
+- Kapat.
 
-Eklenti kayıtları, kullanıcının NVDA yapılandırma klasörü içinde yer alan kurum\_rehberi klasöründe saklanır. Kayıt dosyası rehber.json adını taşır. 
+## Klavye Kısayolları
 
-Ayarlar, aynı klasörde bulunan ayarlar.json dosyasında tutulur. 
+Ana pencere açıkken kullanılabilecek temel kısayollar:
 
-İçe Aktarma ve Dışa Aktarma
+```text
+Alt+Y: Yeni kayıt penceresini açar.
+Alt+Z: Seçili kaydı düzenler.
+Alt+S: Seçili kaydı silme işlemini başlatır.
+Alt+A: İçe/Dışa Aktar penceresini açar.
+Alt+R: Ayarlar penceresini açar.
+Alt+H: Yardım dosyasını açar.
+Alt+B: Kurum Rehberi web sayfasını açarak yorum bırakma bölümüne erişim sağlar.
+Alt+K: Kurum Rehberi penceresini kapatır.
+```
 
-Dışa aktarma işlemi, mevcut rehber kayıtlarını kullanıcının Belgeler klasörüne yedek dosyası olarak kaydeder. Yedek dosyası, tarih ve saat bilgisi içeren bir dosya adıyla oluşturulur. 
+Kayıt listesi üzerindeyken:
 
-İçe aktarma işlemi, daha önce oluşturulmuş bir JSON yedek dosyası seçilerek rehber kayıtlarının geri yüklenmesini sağlar. İşlem başlamadan önce kullanıcıdan onay alınır. Bu işlem, mevcut rehber kayıtlarının yerine seçilen yedek dosyasındaki kayıtları getirir. 
+```text
+Enter: Seçili kaydı düzenler.
+Delete: Seçili kaydı silmek üzere onay penceresi açar.
+```
 
-İçe aktarma sırasında güvenlik amacıyla mevcut kayıtların otomatik yedeği alınır. Böylece yanlış dosya seçilmesi veya beklenmeyen bir durum yaşanması hâlinde, önceki kayıtların geri alınabilmesi kolaylaşır. 
+Seçili kayıt bilgi alanlarında:
 
-Gizlilik ve Yerel Saklama
+```text
+Alt+C: Odaktaki bilgi alanının içeriğini panoya kopyalar.
+Alt+T: Seçili kaydın telefon numarasını panoya kopyalar.
+Alt+D: Seçili kaydın dahili numarasını panoya kopyalar.
+Alt+E: Seçili kaydın e-posta adresini panoya kopyalar.
+```
 
-Kurum Rehberi; kişisel verileri, rehber kayıtlarını, ayar bilgilerini veya kullanım verilerini internet üzerinden herhangi bir sunucuya göndermez. 
+## Ayarlar
 
-Eklenti herhangi bir çevrim içi hizmete bağlanmaz; veri toplamaz, takip yapmaz, analiz veya istatistik amacıyla bilgi işlemez. Tüm kayıtlar ve ayarlar yalnızca kullanıcının kendi bilgisayarında yerel olarak saklanır. 
+Ayarlar penceresinde kayıt alanlarının görünürlüğü değiştirilebilir.
 
-Kullanıcı tarafından girilen rehber bilgileri tamamen kullanıcının sorumluluğundadır. Eklenti bu bilgileri yalnızca yerel kayıt, görüntüleme, düzenleme, arama, içe aktarma ve dışa aktarma işlemleri için kullanır. 
+Açılıp kapatılabilen alanlar:
 
-Erişilebilirlik
+- Ad.
+- Soyad.
+- Görev/Unvan.
+- Birim.
+- Telefon Numarası.
+- Dahili Numara.
+- E-posta.
+- Not.
 
-Eklenti, NVDA ekran okuyucusu ile kullanılmak üzere hazırlanmıştır. Arayüzdeki alanlar, düğmeler, listeler ve bilgi alanları klavye ile erişilebilir olacak şekilde düzenlenmiştir. 
+Bir alanın kapatılması mevcut kayıt verilerini silmez. Kapatılan alan yalnızca ana listede, yeni kayıt penceresinde, düzenleme penceresinde, seçili kayıt bilgilerinde ve arama kapsamında gizlenir. Alan yeniden açıldığında daha önce kaydedilmiş bilgiler tekrar görünür.
 
-Seçili kayıt bilgileri, ekran okuyucu ile rahat takip edilebilmesi için ayrı bilgi alanlarında gösterilir. Kullanıcı, Tab ve Shift+Tab tuşlarıyla alanlar arasında gezinebilir. 
+Kurum Rehberi penceresi açıkken ayarlar değiştirilirse, değişikliklerin uygulanması için Kurum Rehberi penceresinin kapatılıp yeniden açılması gerekir.
 
-Öneri, Görüş ve Eleştiriler
+## İçe Aktarma ve Dışa Aktarma
 
-Kurum Rehberi’nin geliştirme süreci, kullanıcı deneyimleri ve gerçek ihtiyaçlar doğrultusunda sürdürülecektir. Her türlü öneri, görüş ve eleştiri için Mehmet Aykurt ile aşağıdaki e-posta adresi üzerinden iletişime geçilebilir. 
+Dışa aktarma işlemi, mevcut rehber kayıtlarını kullanıcının Belgeler klasörüne JSON biçiminde yedek dosyası olarak kaydeder.
 
-E-posta: m.aykurt38@gmail.com
+İçe aktarma işlemi, daha önce oluşturulmuş bir JSON yedek dosyası seçilerek rehber kayıtlarının geri yüklenmesini sağlar. İşlem başlamadan önce kullanıcıdan onay alınır.
 
-Telif, Lisans ve Özgün Geliştirici Bildirimi
+İçe aktarma sırasında mevcut kayıtların otomatik yedeği alınır. Böylece yanlış dosya seçilmesi veya beklenmeyen bir durum yaşanması hâlinde önceki kayıtların geri alınabilmesi kolaylaşır.
 
-Kurum Rehberi, Mehmet Aykurt tarafından geliştirilmiştir. 
+## Verilerin Saklanması
 
-Telif hakkı © 2026 Mehmet Aykurt. Öneri, görüş ve eleştiriler için m.aykurt38@gmail.com adresi üzerinden iletişime geçilebilir. 
+Eklenti kayıtları, kullanıcının NVDA yapılandırma klasörü içinde yer alan aşağıdaki klasörde saklanır:
 
-Bu eklenti GNU General Public License v2.0 kapsamında lisanslanmıştır. Eklentiyi değiştiren, uyarlayan veya yeniden dağıtan kişiler, lisans hükümleri uyarınca özgün geliştirici bilgisini, telif bildirimini ve lisans bilgisini korumalıdır. 
+```text
+kurum_rehberi
+```
 
-Bu eklentinin değiştirilmiş sürümleri dağıtılırken yapılan değişikliklerin açıkça belirtilmesi ve özgün çalışmanın Mehmet Aykurt tarafından geliştirildiği bilgisinin korunması gerekir. 
+Kayıt dosyası:
 
-Son Söz
+```text
+rehber.json
+```
 
-Kurum Rehberi; sade görünümü, erişilebilir yapısı ve özelleştirilebilir alanlarıyla farklı kullanım senaryolarına uyum sağlayacak biçimde tasarlanmıştır. Temel hedef, NVDA kullanıcılarının iletişim bilgilerine daha hızlı, düzenli ve bağımsız biçimde ulaşabilmesini sağlamaktır. 
+Ayar dosyası:
 
+```text
+ayarlar.json
+```
+
+## Gizlilik
+
+Kurum Rehberi; kişisel verileri, rehber kayıtlarını, ayar bilgilerini veya kullanım verilerini kendiliğinden internet üzerinden herhangi bir sunucuya göndermez.
+
+Eklenti, rehber verilerini yalnızca kullanıcının kendi bilgisayarında yerel olarak saklar. Kayıtlar; görüntüleme, düzenleme, arama, silme, içe aktarma ve dışa aktarma işlemleri dışında herhangi bir amaçla kullanılmaz.
+
+Ana pencerede yer alan Yorum Bırak düğmesi, yalnızca kullanıcının isteğiyle Kurum Rehberi eklentisine ait web sayfasını tarayıcıda açar. Bu işlem, rehber kayıtlarının veya ayar dosyalarının gönderilmesi anlamına gelmez.
+
+## Yorum ve Geri Bildirim
+
+Kullanıcılar, eklentiye ilişkin görüş, öneri ve değerlendirmelerini Kurum Rehberi web sayfası üzerinden iletebilir.
+
+Kurum Rehberi sayfası:
+
+```text
+https://mehmetaykurt.com.tr/erisilebilirlik/kurum-rehberi.html
+```
+
+## Çeviri Katkıları
+
+Kurum Rehberi Türkçe olarak hazırlanmıştır. Bununla birlikte, ileride farklı dillere çevrilebilmesi için eklenti metinleri çeviriye uygun biçimde düzenlenmiştir.
+
+Çeviri yapmak isteyenler için çeviri şablonu ve başlangıç dosyaları sağlanabilir.
+
+Temel çeviri dosyaları:
+
+```text
+po/kurum_rehberi.pot
+locale/en/LC_MESSAGES/nvda.po
+```
+
+Çeviri yapılırken:
+
+- `msgid` satırları değiştirilmemelidir.
+- Yalnızca `msgstr` alanları çevrilmelidir.
+- `&` işareti erişim tuşunu belirtir; hedef dilde uygun harfin önüne taşınabilir.
+- `{0}`, `{1}` gibi yer tutucular aynen korunmalıdır.
+
+Tamamlanmış çeviri, derlenmiş `nvda.mo` dosyası olarak ilgili dil klasörüne eklenir.
+
+Örnek:
+
+```text
+locale/en/LC_MESSAGES/nvda.mo
+```
+
+## Yardım Dosyası
+
+Ayrıntılı kullanım ve bilgilendirme kılavuzu eklenti içinde şu konumda yer alır:
+
+```text
+doc/tr/readme.html
+```
+
+NVDA içinden Yardım düğmesine basıldığında bu dosya açılır.
+
+## Lisans
+
+Bu eklenti **GNU General Public License v2.0** kapsamında lisanslanmıştır.
+
+Eklentiyi değiştiren, uyarlayan veya yeniden dağıtan kişiler, lisans hükümleri uyarınca özgün geliştirici bilgisini, telif bildirimini ve lisans bilgisini korumalıdır.
+
+## Telif ve Geliştirici Bildirimi
+
+```text
+Telif hakkı © 2026 Mehmet Aykurt
+```
+
+Kurum Rehberi, Mehmet Aykurt tarafından geliştirilmiştir.
+
+Bu eklentinin değiştirilmiş sürümleri dağıtılırken yapılan değişikliklerin açıkça belirtilmesi ve özgün çalışmanın Mehmet Aykurt tarafından geliştirildiği bilgisinin korunması gerekir.
+
+## Son Söz
+
+Kurum Rehberi; sade görünümü, erişilebilir yapısı ve özelleştirilebilir alanlarıyla farklı kullanım senaryolarına uyum sağlayacak biçimde tasarlanmıştır. Temel hedef, NVDA kullanıcılarının iletişim bilgilerine daha hızlı, düzenli ve bağımsız biçimde ulaşabilmesini sağlamaktır.
