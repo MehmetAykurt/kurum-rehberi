@@ -7,7 +7,7 @@ Bu eklenti; kurumlarda görev yapan personelin ad, soyad, görev veya unvan, bir
 ## Sürüm
 
 ```text
-1.1.0
+1.2.0
 ```
 
 ## Geliştirici
@@ -41,19 +41,11 @@ Eklenti; santral görevlileri, memurlar, okul personeli, kurum çalışanları v
 - İçe aktarma öncesinde mevcut kayıtların otomatik yedeğini alma.
 - Görünecek alanları ayarlardan belirleme.
 - Yardım dosyasına doğrudan eklenti penceresinden erişme.
-- Kurum Rehberi web sayfası üzerinden yorum ve geri bildirim bırakma.
 - İleride farklı dillere çevrilebilmesi için hazırlanmış çeviri altyapısı.
 
-## Sürüm 1.1.0 ile Gelen Düzenlemeler
+## Sürüm 1.2.0 ile Gelen Düzenlemeler
 
-Bu sürümde eklentinin kullanım yapısı sadeleştirilmiş ve ana pencere daha merkezî bir kullanım alanı hâline getirilmiştir.
-
-- NVDA Araçlar menüsündeki Kurum Rehberi alt menüsü kaldırılmıştır.
-- Ayarlar, Yardım ve Yorum Bırak seçenekleri doğrudan ana pencereye taşınmıştır.
-- Yorum Bırak düğmesi, Kurum Rehberi eklentisine ait web sayfasını tarayıcıda açacak biçimde düzenlenmiştir.
-- Girdi Hareketleri bölümünde yalnızca Kurum Rehberi penceresini açan komut bırakılmıştır.
-- Pencere içi kısayollar yalnızca Kurum Rehberi penceresi açıkken çalışacak biçimde korunmuştur.
-- Kullanıcıya görünen metinler gözden geçirilmiş ve ileride yapılabilecek çeviriler için çeviri altyapısı hazırlanmıştır.
+- Çeşitli iyileştirmeler yapıldı.
 
 ## Kullanım
 
@@ -65,7 +57,7 @@ NVDA+Shift+R
 
 Kullanıcı isterse bu kısayolu NVDA menüsünde yer alan **Tercihler > Girdi Hareketleri** bölümünden değiştirebilir.
 
-Girdi Hareketleri bölümünde yalnızca Kurum Rehberi penceresini açan komut bulunur. Yeni kayıt, düzenleme, silme, ayarlar, yardım ve yorum bırakma gibi işlemlere ait kısayollar yalnızca Kurum Rehberi penceresi açıkken geçerlidir.
+Girdi Hareketleri bölümünde yalnızca Kurum Rehberi penceresini açan komut bulunur. Yeni kayıt, düzenleme, silme, ayarlar ve yardım gibi işlemlere ait kısayollar yalnızca Kurum Rehberi penceresi açıkken geçerlidir.
 
 ## Ana Pencere
 
@@ -87,7 +79,6 @@ Ana penceredeki işlem düğmeleri şunlardır:
 - İçe/Dışa Aktar.
 - Ayarlar.
 - Yardım.
-- Yorum Bırak.
 - Kapat.
 
 ## Klavye Kısayolları
@@ -101,7 +92,6 @@ Alt+S: Seçili kaydı silme işlemini başlatır.
 Alt+A: İçe/Dışa Aktar penceresini açar.
 Alt+R: Ayarlar penceresini açar.
 Alt+H: Yardım dosyasını açar.
-Alt+B: Kurum Rehberi web sayfasını açarak yorum bırakma bölümüne erişim sağlar.
 Alt+K: Kurum Rehberi penceresini kapatır.
 ```
 
@@ -173,18 +163,6 @@ ayarlar.json
 Kurum Rehberi; kişisel verileri, rehber kayıtlarını, ayar bilgilerini veya kullanım verilerini kendiliğinden internet üzerinden herhangi bir sunucuya göndermez.
 
 Eklenti, rehber verilerini yalnızca kullanıcının kendi bilgisayarında yerel olarak saklar. Kayıtlar; görüntüleme, düzenleme, arama, silme, içe aktarma ve dışa aktarma işlemleri dışında herhangi bir amaçla kullanılmaz.
-
-Ana pencerede yer alan Yorum Bırak düğmesi, yalnızca kullanıcının isteğiyle Kurum Rehberi eklentisine ait web sayfasını tarayıcıda açar. Bu işlem, rehber kayıtlarının veya ayar dosyalarının gönderilmesi anlamına gelmez.
-
-## Yorum ve Geri Bildirim
-
-Kullanıcılar, eklentiye ilişkin görüş, öneri ve değerlendirmelerini Kurum Rehberi web sayfası üzerinden iletebilir.
-
-Kurum Rehberi sayfası:
-
-```text
-https://mehmetaykurt.com.tr/erisilebilirlik/kurum-rehberi.html
-```
 
 ## Çeviri Katkıları
 

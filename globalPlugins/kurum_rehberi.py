@@ -7,7 +7,6 @@ import ctypes
 import json
 import os
 import re
-import webbrowser
 from datetime import datetime
 
 import wx
@@ -33,7 +32,6 @@ DATA_FOLDER_NAME = "kurum_rehberi"
 DATA_FILE_NAME = "rehber.json"
 SETTINGS_FILE_NAME = "ayarlar.json"
 HELP_FILE_NAME = "readme.html"
-KURUM_REHBERI_WEB_PAGE_URL = "https://mehmetaykurt.com.tr/erisilebilirlik/kurum-rehberi.html"
 
 
 FIELD_DEFINITIONS = [
@@ -164,31 +162,6 @@ def openHelpFile(parent=None):
             parent
         )
 
-
-
-def openKurumRehberiWebPage(parent=None):
-    if parent is None:
-        parent = gui.mainFrame
-
-    try:
-        opened = webbrowser.open(KURUM_REHBERI_WEB_PAGE_URL)
-        if opened:
-            ui.message(_("Kurum Rehberi sayfası tarayıcıda açılıyor."))
-            return
-
-        os.startfile(KURUM_REHBERI_WEB_PAGE_URL)
-        ui.message(_("Kurum Rehberi sayfası tarayıcıda açılıyor."))
-    except Exception as error:
-        logWarning("Kurum Rehberi web sayfası açılamadı.", exc_info=True)
-        wx.MessageBox(
-            _("Kurum Rehberi sayfası açılamadı.\n\nAdres:\n{0}\n\nHata:\n{1}").format(
-                KURUM_REHBERI_WEB_PAGE_URL,
-                error
-            ),
-            _("Kurum Rehberi"),
-            wx.OK | wx.ICON_ERROR,
-            parent
-        )
 
 
 def getDocumentsFolderPath():
@@ -880,7 +853,6 @@ class KurumRehberiDialog(wx.Dialog):
         self.importExportButton = wx.Button(panel, label=_("İçe/Dışa &Aktar"))
         self.settingsButton = wx.Button(panel, label=_("Aya&rlar"))
         self.helpButton = wx.Button(panel, label=_("Yardım (&H)"))
-        self.feedbackButton = wx.Button(panel, label=_("Yorum &Bırak"))
         self.closeButton = wx.Button(panel, label=_("&Kapat"))
 
         buttonSizer.Add(self.newButton, 0, wx.RIGHT, 8)
@@ -890,7 +862,6 @@ class KurumRehberiDialog(wx.Dialog):
         buttonSizer.AddStretchSpacer(1)
         buttonSizer.Add(self.settingsButton, 0, wx.RIGHT, 8)
         buttonSizer.Add(self.helpButton, 0, wx.RIGHT, 8)
-        buttonSizer.Add(self.feedbackButton, 0, wx.RIGHT, 8)
         buttonSizer.Add(self.closeButton, 0)
         mainSizer.Add(buttonSizer, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
 
@@ -906,7 +877,6 @@ class KurumRehberiDialog(wx.Dialog):
         self.importExportButton.Bind(wx.EVT_BUTTON, self.onImportExport)
         self.settingsButton.Bind(wx.EVT_BUTTON, self.onSettings)
         self.helpButton.Bind(wx.EVT_BUTTON, self.onHelp)
-        self.feedbackButton.Bind(wx.EVT_BUTTON, self.onFeedback)
         self.closeButton.Bind(wx.EVT_BUTTON, self.onClose)
         self.Bind(wx.EVT_CLOSE, self.onClose)
         self.Bind(wx.EVT_CHAR_HOOK, self.onCharHook)
@@ -915,7 +885,7 @@ class KurumRehberiDialog(wx.Dialog):
     def setupTabOrder(self):
         self.tabOrder = [self.searchText, self.clearSearchButton, self.recordList]
         self.tabOrder.extend(self.detailTextControls)
-        self.tabOrder.extend([self.newButton, self.editButton, self.deleteButton, self.importExportButton, self.settingsButton, self.helpButton, self.feedbackButton, self.closeButton])
+        self.tabOrder.extend([self.newButton, self.editButton, self.deleteButton, self.importExportButton, self.settingsButton, self.helpButton, self.closeButton])
 
         for index in range(1, len(self.tabOrder)):
             self.tabOrder[index].MoveAfterInTabOrder(self.tabOrder[index - 1])
@@ -1478,10 +1448,6 @@ class KurumRehberiDialog(wx.Dialog):
 
     def onHelp(self, event):
         openHelpFile(self)
-        self.recordList.SetFocus()
-
-    def onFeedback(self, event):
-        openKurumRehberiWebPage(self)
         self.recordList.SetFocus()
 
     def onClose(self, event):
